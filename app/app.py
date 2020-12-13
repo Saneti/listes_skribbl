@@ -7,7 +7,7 @@ import io
 
 def fetch_lists():
     lists = {}
-    for (dirpath, dirnames, filenames) in walk('../Lists'):
+    for (dirpath, dirnames, filenames) in walk('../../Lists'):
         # print(dirpath)
         # print(dirnames)
         # print(filenames)
