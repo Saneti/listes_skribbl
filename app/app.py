@@ -1,18 +1,16 @@
 from os import walk
-from os import path
+import os.path
 from tkinter import *
 import ntpath
 import pyperclip
 import io
+import sys
 
-def fetch_lists():
+def fetch_lists(path):
     lists = {}
-    for (dirpath, dirnames, filenames) in walk('../../Lists'):
-        # print(dirpath)
-        # print(dirnames)
-        # print(filenames)
+    for (dirpath, dirnames, filenames) in walk(path):
         for filename in filenames:
-            file = path.join(dirpath, filename)
+            file = os.path.join(dirpath, filename)
             f = io.open(file, 'r', encoding='utf-8')
             lists[file] = f.read()
             f.close()
@@ -20,11 +18,11 @@ def fetch_lists():
     return lists
 
 class Application(Frame):
-    def __init__(self, master=None):
+    def __init__(self, master=None, path='../Lists'):
         Frame.__init__(self, master)
         self.master = master
         self.master.title('Skribbl List Creator')
-        self.lists = fetch_lists()
+        self.lists = fetch_lists(path)
         self.pack()
         self.create_widgets()
         
@@ -91,9 +89,9 @@ class Application(Frame):
         pyperclip.copy(self.generate_list_widget.get("1.0", END))
         
 
-def main_loop():
+def main_loop(path):
     root = Tk()
-    app = Application(master=root)
+    app = Application(master=root, path=path)
     while True:
         try:
             app.update_idletasks()
@@ -102,7 +100,12 @@ def main_loop():
             break
 
 if __name__ == '__main__':
+    if len(sys.argv) >= 2:
+        path = sys.argv[1]
+    else:
+        path = '../Lists'
+    
     try:
-        main_loop()
+        main_loop(path)
     except KeyboardInterrupt:
         pass
